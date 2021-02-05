@@ -1,4 +1,5 @@
 import pandas as pd
+import csv
 
 '''
     B Tree 구현
@@ -111,15 +112,15 @@ class B_Tree:
             node.datas[idx + 1] = data
 
     # Print the tree
-    def print_tree(self, x, l=0):
-        print("Level ", l, " ", len(x.datas), end=":")
-        for data in x.datas:
+    def print_tree(self, node, d=0):
+        print("Depth ", d, " ", end="-")
+        for data in node.datas:
             print(data[0], end=" ")
-        print()
-        l += 1
-        if len(x.child) > 0:
-            for i in x.child:
-                self.print_tree(i, l)
+        print("")
+        d += 1
+        if len(node.child) > 0:
+            for child_node in node.child:
+                self.print_tree(child_node, d)
 
 def main():
     global MAXIMUM
@@ -128,15 +129,43 @@ def main():
     
     btree = B_Tree()
 
-    for key, value in input_df.iterrows():
-        btree.insert([value[0], value[1]])
-        print(f"{value[0]} key's insertion complete")
+    # # Insert data
+    # for key, value in input_df.iterrows():
+    #     btree.insert([value[0], value[1]])
+    #     print(f"{value[0]} key's insertion complete")
 
+    # # Search data and write to csv file
+    # with open('../data/search_result.csv', 'w', newline='') as rstfile:
+    #     wr = csv.writer(rstfile, delimiter='\t')
+    #     for key, value in input_df.iterrows():
+    #         rst = btree.search(value[0])
+    #         print(f"{rst[0]} search complete")
+    #         wr.writerow([rst[0], rst[1]])
+
+    result_df = pd.read_csv("../data/search_result.csv", sep='\s+', header=None)
+    
+    # Compare Input data and Output data
+    answer, wrong = 0, 0
+    for idx in range(len(input_df.index)):
+        input_row = input_df.iloc[idx]
+        result_row = result_df.iloc[idx]
+
+        print(f"{input_row[0]} compare complete")
+        if input_row[0] == result_row[0] and input_row[1] == result_row[1]:
+            answer += 1
+        else :
+            wrong += 1
+    
+    print(f"answer : {answer}, wrong : {wrong}")
+
+    
+    # val = btree.search(3000)
+    # print(val)
     # for idx in range(100):
     #     btree.insert([idx, idx])
     #     print(f"{idx} complete")
 
-    btree.print_tree(btree.tree)
+    # btree.print_tree(btree.tree)
 
 if __name__ == "__main__":
     main()
